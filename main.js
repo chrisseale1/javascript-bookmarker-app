@@ -6,14 +6,22 @@ function saveBookmark(e){
   // Get form values
   var siteName =document.getElementById('siteName').value;
   var siteUrl =document.getElementById('siteUrl').value;
+  var siteDescription = document.getElementById('siteDescription').value;
+  var defaultSiteDescription = document.getElementById('siteDescription').defaultValue = "A great website!";
 
-  if(!validateForm(siteName, siteUrl)){
+
+  if(!siteDescription){
+    siteDescription = defaultSiteDescription;
+  }
+
+  if(!validateForm(siteName, siteUrl, siteDescription)){
     return false;
   }
 
   var bookmark = {
     name: siteName,
-    url: siteUrl
+    url: siteUrl,
+    description: siteDescription
   }
 
   /*
@@ -26,9 +34,9 @@ function saveBookmark(e){
 
   // Test if bookmarks is null
   if(localStorage.getItem('bookmarks') === null){
-    // Init array
+    // Initialize array
     var bookmarks = [];
-    // Add to array
+    // Add bookmark to array
     bookmarks.push(bookmark);
     // Set to localStorage
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
@@ -81,19 +89,22 @@ function fetchBookmarks(){
   for(var i = 0; i < bookmarks.length; i++){
     var name = bookmarks[i].name;
     var url = bookmarks[i].url;
+    var description = bookmarks[i].description;
 
     bookmarksResults.innerHTML += '<div class="well">'+
                                   '<h3>'+name+
                                   ' <a class="btn btn-default" target="_blank" href="'+url+'">Visit</a> ' +
                                   ' <a onclick="deleteBookmark(\''+url+'\')" class="btn btn-danger" href="#">Delete</a> ' +
                                   '</h3>'+
+                                  '<h5><b>Description: </b>'+description+
+                                  '</h5>'+
                                   '</div>';
   }
 }
 
 // Validate Form
 function validateForm(siteName, siteUrl){
-  if(!siteName || !siteUrl){
+if(!siteName || !siteUrl){
     alert('Please fill in the form');
     return false;
   }
@@ -105,6 +116,7 @@ function validateForm(siteName, siteUrl){
     alert('Please use a valid URL');
     return false;
   }
+
 
   return true;
 }
